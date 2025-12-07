@@ -1,4 +1,4 @@
-# 리드미 - 박지유
+`# 리드미 - 박지유
 
 # Configuration 클래스
 
@@ -74,3 +74,59 @@ Configuration 모델은 원본 네트워크의 차수 분포만을 유지하면�
     2\. 피팅 파라미터 $a$와 멱법칙 지수 $\beta$($b_{\text{hat}}$)를 반환합니다.
   * **활용:** 이 함수를 원본 네트워크($G$)와 $\text{BA}$ 모델 모두에 적용하여 두 네트워크의 $\beta$ 값을 비교 분석할 수 있습니다.
 
+# README - 윤수빈
+
+## 1. 주요 기능 및 알고리즘
+
+### 📄 `degree_centerailty.py`
+
+이 코드는 실제 네트워크($G$)와 세 가지 무작위 네트워크 모델(ER, Chung-Lu, Configuration)을 생성하고, 이들의 **연결 정도 중심성(Degree Centrality)** 분포를 계산하여 박스 플롯으로 비교하는 기능을 제공합니다.
+
+| 구분 | 내용 |
+| :--- | :--- |
+| **목적** | 서로 다른 무작위 네트워크 모델이 실제 네트워크와 얼마나 유사한 연결 정도 분포를 갖는지 시각적으로 비교합니다. |
+| **중심성 지표** | 연결 정도 중심성 (Degree Centrality) |
+| **네트워크 모델** | ER(Erdos-Renyi), Chung-Lu, Configuration |
+
+#### 1-1. 랜덤 그래프 생성 함수
+
+* `create_chung_lu_graph(G)`: 원본 그래프의 **기대 차수**를 보존하며 무작위로 엣지를 연결합니다.
+* `gnp_random_graph(N, p)`: 노드 수 $N$과 엣지 연결 확률 $p$를 사용하여 **ER 그래프**를 생성합니다.
+* `create_config_graph(degree_seq)`: 원본 그래프의 **정확한 차수 시퀀스**를 보존하는 **Configuration 모델**을 생성합니다.
+
+#### 1-2. 중심성 비교 및 시각화
+
+* `plot_degree_boxplot`: 중심성 값 리스트를 받아 일관된 스타일의 **박스 플롯**으로 시각화합니다.
+* `boxplot_degree_same_style`: 네 가지 그래프(Original, ER, Config, Chung-Lu)의 연결 정도 중심성을 계산하고, 이를 비교하는 박스 플롯을 생성합니다.
+
+---
+
+### 📄 `chung_lu.py`
+
+이 코드는 실제 네트워크를 기반으로 **Chung-Lu(CL) 무작위 네트워크 모델**을 반복 생성하고, 두 네트워크의 **차수 분포($P(k)$)**를 비교 분석하는 `chung_lu_model` 클래스를 제공합니다.
+
+| 구분 | 내용 |
+| :--- | :--- |
+| **목적** | Chung-Lu 모델이 실제 네트워크의 차수 분포를 얼마나 잘 재현하는지 통계적으로 검증합니다. |
+| **CL 모델 특징** | 각 노드의 **기대 차수**를 원본 네트워크와 동일하게 유지하도록 엣지 연결 확률 $P_{ij} \propto k_i k_j$를 설정합니다. |
+| **앙상블** | `num_simul` 횟수만큼 모델을 반복 생성하여 통계적 신뢰도를 높입니다. |
+
+#### 1-1. 주요 메서드 설명
+
+* `load_graph(self)`: 지정된 CSV 파일에서 실제 네트워크($\text{actual\_G}$)를 로드하고, 실제 노드들의 차수 배열을 추출합니다.
+* `create_chung_lu_graph(self)`: Chung-Lu 모델을 생성하는 핵심 로직이며, $P_{ij} = \min(1.0, \frac{k_i k_j}{\sum k})$ 확률에 따라 엣지를 연결합니다.
+* `generate_ensemble(self)`: `num_simul` 횟수만큼 CL 모델을 반복 생성하여 저장합니다.
+* `calculate_distributions(self)`: 원본 네트워크와 CL 모델 앙상블의 차수 분포를 각각 계산합니다.
+* `draw_comparison(self)`: 원본 네트워크와 CL 모델 앙상블의 **평균 차수 분포**를 하나의 **히스토그램**으로 그려 시각적으로 비교합니다.
+
+## 2. 실행 예시
+
+```python
+# chung_lu.py 실행 예시
+cl_model = chung_lu_model('/Users/yoonsubin/Documents/2025/network_pj/data/uganda health data', num_simul=100)
+
+cl_model.load_graph()
+cl_model.generate_ensemble()
+cl_model.calculate_distributions()
+
+cl_model.draw_comparison()
