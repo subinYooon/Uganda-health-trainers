@@ -113,7 +113,7 @@ Configuration 모델은 원본 네트워크의 차수 분포만을 유지하면�
 
 #### 1-1. 주요 메서드 설명
 
-* `load_graph(self)`: 지정된 CSV 파일에서 실제 네트워크 `acture_G`를 로드하고, 실제 노드들의 차수 배열을 추출합니다.
+* `load_graph(self)`: 지정된 CSV 파일에서 실제 네트워크를 로드하고, 실제 노드들의 차수 배열을 추출합니다.
 * `create_chung_lu_graph(self)`: Chung-Lu 모델을 생성하는 핵심 로직이며, $P_{ij} = \min(1.0, \frac{k_i k_j}{\sum k})$ 확률에 따라 엣지를 연결합니다.
 * `generate_ensemble(self)`: `num_simul` 횟수만큼 CL 모델을 반복 생성하여 저장합니다.
 * `calculate_distributions(self)`: 원본 네트워크와 CL 모델 앙상블의 차수 분포를 각각 계산합니다.
