@@ -7,13 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1e7HUWBXj3U-3fYsFW5Jxtg91VXmrGjRD
 """
 
-import itertools
-import random
-import networkx as nx
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-
 class ER:
     def __init__(self, G, n, mode="gnp"):
         self.G = G
@@ -147,22 +140,3 @@ class ER:
 
       plt.legend(fontsize=12)
       plt.show()
-
-# uganda
-
-df = pd.read_csv("uganda health data", header=None)
-
-G_health = nx.Graph()
-G_health.add_nodes_from(set(list(df.iloc[:, 0]) + list(df.iloc[:, 1])))
-
-for i in range(len(df)):
-  if df.iloc[i, 1] != df.iloc[i, 0]:
-    G_health.add_edge(df.iloc[i, 0], df.iloc[i, 1])
-
-print(len(G_health.nodes()), len(G_health.edges()))
-
-E = ER(G_health, 100)
-E.n_repeat()
-E.cal_dist()
-E.draw_histogram()
-

@@ -7,53 +7,25 @@ Original file is located at
     https://colab.research.google.com/drive/1w4u_5os3w1Z6XDtFkS9Fs3JsTs5zhX70
 """
 
-import networkx as nx
-import numpy as np
-import matplotlib.pyplot as plt
-import random
-import pandas as pd
-
-"""# 우간다"""
-
 class chung_lu_model:
-  def __init__(self, csv_file, num_simul=50):
-    self.csv_file = csv_file
-    self.num_simul = num_simul
-    self.actual_graph = None
-    self.actual_degrees = None
-    self.actual_dist = None
-    self.chunglu_models = []
-    self.cl_dists = []
-    self.actual_G = None
+  def __init__(self, G, num_simul=50):
+        if not isinstance(G, nx.Graph):
+            raise TypeError("G는 NetworkX Graph 객체여야 합니다.")
+            
+        if G.number_of_nodes() == 0:
+            raise ValueError("입력 그래프 G가 비어 있습니다.")
 
-  # 그래프 로드
-  def load_graph(self):
-        self.actual_degrees = None
-        self.actual_G = None
-
-        try:
-            df = pd.read_csv(self.csv_file, header=None)
-            self.actual_G = nx.Graph()
-
-            all_nodes = set(list(df.iloc[:, 0].dropna()) + list(df.iloc[:, 1].dropna()))
-            self.actual_G.add_nodes_from(all_nodes)
-
-            for i in range(len(df)):
-              node1 = df.iloc[i, 0]
-              node2 = df.iloc[i, 1]
-
-              if node1 != node2 and pd.notna(node1) and pd.notna(node2):
-                self.actual_G.add_edge(node1, node2)
-
-            self.actual_degrees = [d for _, d in self.actual_G.degree()]
-
-        except FileNotFoundError:
-            print(f"오류: 파일을 찾을 수 없습니다. 경로를 확인해주세요: {self.csv_file}")
-            self.actual_degrees = None
-
-        except Exception as e:
-            print(f"데이터 처리 중 오류 발생: {e}")
-            self.actual_degrees = None
+        self.num_simul = num_simul
+        self.actual_G = G
+        
+        self.actual_degrees = [d for _, d in G.degree()]
+        
+        if not self.actual_degrees:
+             raise ValueError("차수 시퀀스를 추출할 수 없습니다.")
+             
+        self.actual_dist = None
+        self.chunglu_models = []
+        self.cl_dists = []
 
   # 청루 모형 제작
   def create_chung_lu_graph(self):
@@ -62,8 +34,8 @@ class chung_lu_model:
     total_degree = sum(degrees)
     n = len(degrees)
 
-    G = nx.Graph()
-    G.add_nodes_from(range(n))
+    cl_G = nx.Graph()
+    cl_G.add_nodes_from(range(n))
 
     for i in range(n) :
         for j in range(i+1,n) :
@@ -71,15 +43,15 @@ class chung_lu_model:
             p_ij = min(1.0, p_ij)
 
             if random.random() < p_ij :
-                G.add_edge(i, j)
-    return G
+                cl_G.add_edge(i, j)
+    return cl_G
 
   # ensemble 비교
   def generate_ensemble(self):
-          for _ in range(self.num_simul):
-              temp_net = self.create_chung_lu_graph()
-              simple_net = nx.Graph(temp_net)
-              self.chunglu_models.append(simple_net)
+            for _ in range(self.num_simul):
+                temp_net = self.create_chung_lu_graph()
+                simple_net = nx.Graph(temp_net)
+                self.chunglu_models.append(simple_net)
 
   # P(k) 계산
   def calculate_distributions(self):
@@ -126,12 +98,4 @@ class chung_lu_model:
       plt.legend(fontsize=12)
       plt.show()
 
-# 실행
-cl_model = chung_lu_model('/Users/yoonsubin/Documents/2025/network_pj/data/uganda health data', num_simul=100)
-
-cl_model.load_graph()
-cl_model.generate_ensemble()
-cl_model.calculate_distributions()
-
-cl_model.draw_comparison()
 
