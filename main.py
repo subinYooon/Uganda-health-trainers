@@ -12,19 +12,17 @@ import random
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-# 추가해야 하는 모듈 없나 체크
+import itertools
+import seaborn as sns
+from scipy.optimize import curve_fit
 
-from models.er import ERGraph # 클래스 이름 바꾸기
+from models.er import ER
 from models.configuration import Configuration
-from models.chung_lu import ChungLuModel # 클래스 이름 바꾸기
-from models.ba import BaModel # 클래스 이름 바꾸기
-
-from analysis.degree_centrality import DegreeCentrality # 클래스 이름 바꾸기
-from analysis.closeness_centrality import ClosenessCentrality # 클래스 이름 바꾸기
-
+from models.chung_lu import chung_lu_model
+from models.ba import BA 
 
 def load_graph():
-  nodes = pd.read_csv("data/uganda_health_nodes.csv") # 꼭 data 폴더 속 해당 이름의 파일로 있어야 함
+  nodes = pd.read_csv("data/uganda_health_nodes.csv")
   edges = pd.read_csv("data/uganda_health_edges.csv")
   G = nx.from_pandas_edgelist(edges, source="Source", target="Target")
   return G
@@ -34,8 +32,11 @@ if __name__ == "__main__":
     print("=== Loading network ===")
     G = load_graph()
 
-    print("\n=== Generating ER model histogram ===")  # 해당 클래스 이름으로 함수 호출
-    er_graph = ERGraph(n=100, p=0.05).generate()
+    print("\n=== Generating ER model histogram ===") 
+    E = ER(G, 100)
+    E.n_repeat()
+    E.cal_dist()
+    E.draw_histogram()
 
     print("\n=== Generating Configuration model histogram ===")
     config_model = Configuration(G, 100)
@@ -44,16 +45,21 @@ if __name__ == "__main__":
     config_model.draw_histogram()
 
     print("\n=== Generating Chung-Lu model histogram ===")
-    chung_graph = ChungLuModel(G).generate()
+    cl_model = chung_lu_model('/Users/yoonsubin/Documents/2025/network_pj/data/uganda health data', num_simul=100)
+
+    cl_model.load_graph()
+    cl_model.generate_ensemble()
+    cl_model.calculate_distributions()
+
+    cl_model.draw_comparison()
+
 
     print("\n=== Generating BA model histogram ===")
-    ba_graph = BaModel(n=100, m=2).generate()
-
-    print("\n=== Calculating Degree Centrality ===")
-    degree_scores = DegreeCentrality(G).calculate()
-
-    print("\n=== Calculating Closeness Centrality ===")
-    closeness_scores = ClosenessCentrality(G).calculate()
-
-    print("\nDegree Centrality:", degree_scores)
-    print("Closeness Centrality:", closeness_scores)
+    B = BA(G, 100)
+    B.n_repeat()
+    B.cal_dist()
+    B.draw_histogram()
+    a_ori, beta_ori = B.fit_beta(sample_graph=G)
+    print("original beta =", beta_ori)
+    a_hat, beta_ba = B.fit_beta()
+    print("BA model beta =", beta_ba)

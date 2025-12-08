@@ -7,11 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1w4u_5os3w1Z6XDtFkS9Fs3JsTs5zhX70
 """
 
-import networkx as nx
-import numpy as np
-import matplotlib.pyplot as plt
-import random
-import pandas as pd
 
 """# 우간다"""
 
@@ -125,13 +120,3 @@ class chung_lu_model:
 
       plt.legend(fontsize=12)
       plt.show()
-
-# 실행
-cl_model = chung_lu_model('/Users/yoonsubin/Documents/2025/network_pj/data/uganda health data', num_simul=100)
-
-cl_model.load_graph()
-cl_model.generate_ensemble()
-cl_model.calculate_distributions()
-
-cl_model.draw_comparison()
-
