@@ -14,8 +14,8 @@ class ER:
         self.mode = mode  # "gnp" or "gnm"
 
         # [예외처리 추가]
-        if not isinstance(self.G, nx.Graph):
-            raise TypeError("G must be a networkx.Graph.")
+        # if not isinstance(self.G, nx.Graph):
+        #     raise TypeError("G must be a networkx.Graph.")
         if self.mode not in ("gnp", "gnm"):
             raise ValueError('mode must be "gnp" or "gnm".')
         if not isinstance(self.num_simulations, int) or self.num_simulations < 1:

@@ -46,7 +46,6 @@ if __name__ == "__main__":
 
     print("\n=== Generating Chung-Lu model histogram ===")
     cl_model = chung_lu(G, num_simul=100)
-    cl_model.load_graph()
     cl_model.generate_ensemble()
     cl_model.calculate_distributions()
     cl_model.draw_comparison()
