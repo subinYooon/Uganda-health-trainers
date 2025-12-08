@@ -14,7 +14,6 @@ Configuration 모델은 원본 네트워크의 차수 분포만을 유지하면�
     1. 차수 배열에 따른 stub_list를 생성한다.
         1. 이때 만약 stub_list의 길이가 홀수인 경우 마지막 노드를 하나 더 추가하여 길이를 짝수로 맞춘다.
     2. 모든 stub_list의 값을 소진할 때까지 랜덤으로 노드 2개를 뽑아 연결을 고려한다.
-        1. 연결의 조건으로는 self-loop나 multi-edge가 아니여야 한다.
 3. n_repeat 함수
     1. 입력 받은 반복 개수(num_simulations)만큼 create_config_graph 함수를 생성한다.
     2. num_simulations번 만큼 생성된 configuration 모델은 config_models 리스트에 append 된다.
