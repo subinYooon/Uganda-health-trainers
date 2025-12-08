@@ -18,7 +18,7 @@ import seaborn as sns
 
 from models.er import ER
 from models.configuration import Configuration
-from models.chung_lu import chung_lu_model
+from models.chung_lu import chung_lu
 from models.ba import BA
 
 def load_graph():
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     config_model.draw_histogram()
 
     print("\n=== Generating Chung-Lu model histogram ===")
-    cl_model = chung_lu_model('uganda_health_nodes.csv','uganda_health_edges.csv', num_simul=100)
+    cl_model = chung_lu(G, num_simul=100)
     cl_model.load_graph()
     cl_model.generate_ensemble()
     cl_model.calculate_distributions()

@@ -7,7 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/1w4u_5os3w1Z6XDtFkS9Fs3JsTs5zhX70
 """
 
-class chung_lu_model:
+class chung_lu:
   def __init__(self, G, num_simul=50):
         if not isinstance(G, nx.Graph):
             raise TypeError("G는 NetworkX Graph 객체여야 합니다.")
